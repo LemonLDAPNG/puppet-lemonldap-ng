@@ -1,6 +1,4 @@
 class lemonldap::server::operatingsystem::debian ($webserver) {
-#	$packagesdependency = 
-#['libapache-session-perl','libnet-ldap-perl','libcache-cache-perl','libdbi-perl','perl-modules','libwww-perl','libcache-cache-perl','libxml-simple-perl','libsoap-lite-perl','libhtml-template-perl','libregexp-assemble-perl','libregexp-common-perl','libjs-jquery','libxml-libxml-perl','libcrypt-rijndael-perl','libio-string-perl','libxml-libxslt-perl','libconfig-inifiles-perl','libjson-perl','libstring-random-perl','libemail-date-format-perl','libmime-lite-perl','libcrypt-openssl-rsa-perl','libdigest-hmac-perl','libdigest-sha-perl','libclone-perl','libauthen-sasl-perl','libnet-cidr-lite-perl','libcrypt-openssl-x509-perl','libauthcas-perl','libtest-pod-perl','libtest-mockobject-perl','libauthen-captcha-perl','libnet-openid-consumer-perl','libnet-openid-server-perl','libunicode-string-perl','libconvert-pem-perl','libmoose-perl','libplack-perl']
 
 	$apachegroup = 'www-data';
 

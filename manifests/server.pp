@@ -21,10 +21,7 @@ class lemonldap::server ($domain,$webserver) {
 	package{'lemonpackages':
 		name 	=> "$packageslemon",
 		ensure	=> installed,
-		require	=> [
-			Package['lemonpackagesdependency'],
-			Package['lemonpackagewebserver']
-		],
+		require	=> Package['lemonpackagewebserver'],
 	}
 
 	case $webserver {
