@@ -1,0 +1,5 @@
+[epel]
+name=EPEL packages
+baseurl=http://dl.fedoraproject.org/pub/epel/7/x86_64/
+enabled=1
+gpgcheck=0
