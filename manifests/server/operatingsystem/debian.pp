@@ -3,8 +3,8 @@ class lemonldap::server::operatingsystem::debian ($webserver) {
 	$apachegroup = 'www-data';
 
 	if $webserver == 'nginx' {
-		$packageswebserver 			= ['nginx','nginx-extras']
-		$lemonldap::server::webserverpath	= "/etc/nginx"
+        $packageswebserver 			= ['nginx','nginx-extras', 'lemonldap-ng-fastcgi-server']
+        $lemonldap::server::webserverpath	= "/etc/nginx"
 	}
 	elsif $webserver == 'apache' {
 		$packageswebserver 			= ['apache2','libapache2-mod-perl2','libapache2-mod-fcgid']

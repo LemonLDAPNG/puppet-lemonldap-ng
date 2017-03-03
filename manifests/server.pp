@@ -7,7 +7,7 @@ class lemonldap::server ($domain,$webserver) {
 	}
 
 	# LemonLDAP packages
-	$packageslemon = ['lemonldap-ng','lemonldap-ng-fastcgi-server','lemonldap-ng-doc'] 
+	$packageslemon = ['lemonldap-ng', 'lemonldap-ng-fr-doc']
 
 	host{'lemonldap':
 		ip      => $::ipaddress,
