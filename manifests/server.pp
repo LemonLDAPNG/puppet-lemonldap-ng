@@ -11,11 +11,7 @@ class lemonldap::server ($domain,$webserver) {
 
 	host{'lemonldap':
 		ip      => $::ipaddress,
-		aliases => ["auth.$lemonldap::domain",
-			     "manager.$lemonldap::domain",
-                             "test1.$lemonldap::domain",
-                             "test2.$lemonldap::domain",
-                             "reload.$lemonldap::domain"], 
+		aliases => ["reload.$lemonldap::domain"],
 	}
 
 	package{'lemonpackages':
