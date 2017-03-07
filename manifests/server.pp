@@ -2,9 +2,9 @@ class lemonldap::server($domain,$webserver) {
 
     # Execute OS specific actions
     case $::osfamily {
-        'Debian':    { include lemonldap::server::operatingsystem::debian($webserver) }
-        'RedHat':    { include lemonldap::server::operatingsystem::redhat($webserver) }
-        default:
+        'Debian': { include lemonldap::server::operatingsystem::debian($webserver) }
+        'RedHat': { include lemonldap::server::operatingsystem::redhat($webserver) }
+        default: { fail("Module ${module_name} is not supported on ${::operatingsystem}") }
     }
 
     # LemonLDAP packages
@@ -17,9 +17,9 @@ class lemonldap::server($domain,$webserver) {
     }
 
     case $webserver {
-        'apache':       { include lemonldap::server::webserver::apache($webserverpath,$domain) }
-        'nginx' :       { include lemonldap::server::webserver::nginx($webserverpath,$domain) }
-        default:
+        'apache': { include lemonldap::server::webserver::apache($domain) }
+        'nginx' : { include lemonldap::server::webserver::nginx($domain) }
+        default: { fail("Module ${module_name} needs apache or nginx webserver") }
     }
 
     # Set reload vhost in /etc/hosts

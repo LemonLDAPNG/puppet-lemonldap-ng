@@ -1,4 +1,4 @@
-class lemonldap::server::webserver::nginx($webserverpath,$domain) {
+class lemonldap::server::webserver::nginx($domain) {
 
     augeas{ "handlernginx":
         context => '/files/etc/lemonldap/handler-nginx.conf',
