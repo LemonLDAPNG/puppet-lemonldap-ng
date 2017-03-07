@@ -1,4 +1,4 @@
-class lemonldap::server::webserver::apache($webserverpath,$domain) {
+class lemonldap::server::webserver::apache($domain) {
 
     augeas{ "handlerapache":
         context => '/files/etc/lemonldap/handler-apache2.conf',
@@ -28,7 +28,7 @@ class lemonldap::server::webserver::apache($webserverpath,$domain) {
         changes => [
             'set ServerName test1.$domain',
             'set ServerAlias test2.$domain',
-            ]
+            ],
         onlyif  => 'values "ServerName" != "test1.$domain"',
     }
 

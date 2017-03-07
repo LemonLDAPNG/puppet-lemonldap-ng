@@ -1,14 +1,10 @@
 class lemonldap::server::operatingsystem::redhat($webserver) {
 
-    $apachegroup = 'apache';
-
     if $webserver == 'nginx' {
         $packageswebserver = ['nginx', 'lemonldap-ng-fastcgi-server']
-        $lemonldap::server::webserverpath = "/etc/nginx"
     }
     elsif $webserver == 'apache' {
         $packageswebserver = ['httpd','mod_perl','mod_fcgid']
-        $lemonldap::server::webserverpath = "/etc/httpd"
     }
 
     file{ 'repository_redhat':
