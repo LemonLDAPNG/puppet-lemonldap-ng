@@ -21,7 +21,7 @@ Default SSO domain can also be configured.
 Call lemonldap::server class to install LemonLDAP::NG on a node:
 
 ````
-    class { 'lemonldap::server':
+    class { 'puppet-lemonldap-ng::server':
         domain    => 'example.com',
         webserver => 'apache',
     }

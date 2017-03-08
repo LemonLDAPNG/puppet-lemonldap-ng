@@ -2,8 +2,12 @@ class lemonldap::server($domain,$webserver) {
 
     # Execute OS specific actions
     case $::osfamily {
-        'Debian': { include lemonldap::server::operatingsystem::debian($webserver) }
-        'RedHat': { include lemonldap::server::operatingsystem::redhat($webserver) }
+        'Debian': { 
+             class { 'lemonldap::server::operatingsystem::debian' : webserver => $webserver }
+         }
+        'RedHat': { 
+             class { "lemonldap::server::operatingsystem::redhat" : webserver => $webserver }
+         }
         default: { fail("Module ${module_name} is not supported on ${::operatingsystem}") }
     }
 
@@ -17,20 +21,24 @@ class lemonldap::server($domain,$webserver) {
     }
 
     case $webserver {
-        'apache': { include lemonldap::server::webserver::apache($domain) }
-        'nginx' : { include lemonldap::server::webserver::nginx($domain) }
+        'apache': { 
+              class { "lemonldap::server::webserver::apache" : domain => $domain } 
+        }
+        'nginx' : { 
+              class { "lemonldap::server::webserver::nginx" : domain => $domain }
+        }
         default: { fail("Module ${module_name} needs apache or nginx webserver") }
     }
 
     # Set reload vhost in /etc/hosts
     host{'lemonldap':
         ip      => $::ipaddress,
-        aliases => ["reload.$lemonldap::domain"],
+        host_aliases => "reload.$domain",
     }
 
     # Change default domain
     exec{ 'change-default-domain':
-        command => "sed -i 's/example\.com/${domain}/g' /etc/lemonldap-ng/* /var/lib/lemonldap-ng/conf/lmConf-1.js /var/lib/lemonldap-ng/test/index.pl",
+        command => 'sed -i \'s/example\.com/${domain}/g\' /etc/lemonldap-ng/* /var/lib/lemonldap-ng/conf/lmConf-1.js /var/lib/lemonldap-ng/test/index.pl',
         path    => ['/bin', '/usr/bin'],
     }
 
