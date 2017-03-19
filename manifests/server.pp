@@ -14,10 +14,8 @@ class puppet-lemonldap-ng::server($domain,$webserver) {
     # LemonLDAP packages
     $packageslemon = ['lemonldap-ng', 'lemonldap-ng-fr-doc']
 
-    package{'lemonpackages':
-        name     => "$packageslemon",
+    package{ $packageslemon :
         ensure    => installed,
-        require    => Package['lemonpackagewebserver'],
     }
 
     case $webserver {
@@ -38,8 +36,10 @@ class puppet-lemonldap-ng::server($domain,$webserver) {
 
     # Change default domain
     exec{ 'change-default-domain':
-        command => 'sed -i \'s/example\.com/${domain}/g\' /etc/lemonldap-ng/* /var/lib/lemonldap-ng/conf/lmConf-1.js /var/lib/lemonldap-ng/test/index.pl',
+        command => "sed -i 's/example\.com/$domain/g' /var/lib/lemonldap-ng/conf/lmConf-1.js /var/lib/lemonldap-ng/test/index.pl",
+        #command => 'sed -i \'s/example\.com/${domain}/g\' /etc/lemonldap-ng/* /var/lib/lemonldap-ng/conf/lmConf-1.js /var/lib/lemonldap-ng/test/index.pl',
         path    => ['/bin', '/usr/bin'],
+        require => Package['lemonldap-ng'],
         onlyif  => "grep -qR 'example.com' /etc/lemonldap-ng/* /var/lib/lemonldap-ng/conf/lmConf-1.js /var/lib/lemonldap-ng/test/index.pl",
     }
 

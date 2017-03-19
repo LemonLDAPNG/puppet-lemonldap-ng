@@ -7,8 +7,9 @@ class puppet-lemonldap-ng::server::webserver::nginx($domain) {
     define changedomain() { 
         exec { "changedomain$name" :
               path    => ['/bin','/usr/bin'],
-              command => "sed -i 's/\${domain}/$domain/g' $name ",
-              onlyif  => "grep -q '{domain}' $name",
+              command => "sed -i 's/example\.com/$domain/g' $name ",
+              onlyif  => "grep -q 'example.com' $name",
+              require =>  Exec[ 'change-default-domain'],
         }
     }
 

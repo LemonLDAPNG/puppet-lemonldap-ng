@@ -44,8 +44,7 @@ class puppet-lemonldap-ng::server::operatingsystem::redhat($webserver) {
         subscribe    => [File['repository_key'], File['repository_redhat'], File['repository_redhat_epel']],
     }
 
-    package{ 'lemonpackagewebserver' :
-        name    => "$packageswebserver",
+    package{ $packageswebserver :
         ensure  => installed,
     }
 

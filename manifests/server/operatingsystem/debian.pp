@@ -36,8 +36,7 @@ class puppet-lemonldap-ng::server::operatingsystem::debian($webserver) {
         subscribe    => [ File['repository_key'], File['repository_debian']],
     }
 
-    package{'lemonpackagewebserver' :
-        name   => "$packageswebserver",
+    package{ $packageswebserver :
         ensure => installed,
     }
 
