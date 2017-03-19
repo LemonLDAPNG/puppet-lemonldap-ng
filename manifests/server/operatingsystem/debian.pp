@@ -1,4 +1,4 @@
-class lemonldap::server::operatingsystem::debian($webserver) {
+class puppet-lemonldap-ng::server::operatingsystem::debian($webserver) {
 
     if $webserver == 'nginx' {
         $packageswebserver = ['nginx','nginx-extras', 'lemonldap-ng-fastcgi-server','apt-transport-https']

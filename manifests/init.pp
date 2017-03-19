@@ -9,6 +9,6 @@
 # Clément Oudot <clement.oudot@savoirfairelinux.com> 
 #
 
-class lemonldap {
+class puppet-lemonldap-ng {
 
 }

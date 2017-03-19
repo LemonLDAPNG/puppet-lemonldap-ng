@@ -1,4 +1,4 @@
-class lemonldap::server::operatingsystem::redhat($webserver) {
+class puppet-lemonldap-ng::server::operatingsystem::redhat($webserver) {
 
     if $webserver == 'nginx' {
         $packageswebserver = ['nginx', 'lemonldap-ng-fastcgi-server']
