@@ -1,4 +1,4 @@
-class lemonldap::server::webserver::nginx($domain) {
+class puppet-lemonldap-ng::server::webserver::nginx($domain) {
  
     $nginxconf = ['/etc/lemonldap/handler-nginx.conf','/etc/lemonldap/manager-nginx.conf', '/etc/lemonldap/portal-nginx.conf','/etc/lemonldap/test-nginx.conf' ]
 

@@ -1,12 +1,12 @@
-class lemonldap::server($domain,$webserver) {
+class puppet-lemonldap-ng::server($domain,$webserver) {
 
     # Execute OS specific actions
     case $::osfamily {
         'Debian': { 
-             class { 'lemonldap::server::operatingsystem::debian' : webserver => $webserver }
+             class { 'puppet-lemonldap-ng::server::operatingsystem::debian' : webserver => $webserver }
          }
         'RedHat': { 
-             class { "lemonldap::server::operatingsystem::redhat" : webserver => $webserver }
+             class { "puppet-lemonldap-ng::server::operatingsystem::redhat" : webserver => $webserver }
          }
         default: { fail("Module ${module_name} is not supported on ${::operatingsystem}") }
     }
@@ -22,10 +22,10 @@ class lemonldap::server($domain,$webserver) {
 
     case $webserver {
         'apache': { 
-              class { "lemonldap::server::webserver::apache" : domain => $domain } 
+              class { "puppet-lemonldap-ng::server::webserver::apache" : domain => $domain } 
         }
         'nginx' : { 
-              class { "lemonldap::server::webserver::nginx" : domain => $domain }
+              class { "puppet-lemonldap-ng::server::webserver::nginx" : domain => $domain }
         }
         default: { fail("Module ${module_name} needs apache or nginx webserver") }
     }

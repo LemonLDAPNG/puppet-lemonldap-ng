@@ -1,4 +1,4 @@
-class lemonldap::server::webserver::apache($domain) {
+class puppet-lemonldap-ng::server::webserver::apache($domain) {
     
     $apacheconf = ['/etc/lemonldap-ng/handler-apache2.conf','/etc/lemonldap-ng/manager-apache2.conf','/etc/lemonldap-ng/portal-apache2.conf','/etc/lemonldap-ng/test-apache2.conf']
   
