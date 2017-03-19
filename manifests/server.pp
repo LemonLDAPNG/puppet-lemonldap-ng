@@ -40,6 +40,7 @@ class lemonldap::server($domain,$webserver) {
     exec{ 'change-default-domain':
         command => 'sed -i \'s/example\.com/${domain}/g\' /etc/lemonldap-ng/* /var/lib/lemonldap-ng/conf/lmConf-1.js /var/lib/lemonldap-ng/test/index.pl',
         path    => ['/bin', '/usr/bin'],
+        onlyif  => "grep -qR 'example.com' /etc/lemonldap-ng/* /var/lib/lemonldap-ng/conf/lmConf-1.js /var/lib/lemonldap-ng/test/index.pl",
     }
 
 }
