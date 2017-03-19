@@ -1,10 +1,10 @@
 class lemonldap::server::operatingsystem::debian($webserver) {
 
     if $webserver == 'nginx' {
-        $packageswebserver = ['nginx','nginx-extras', 'lemonldap-ng-fastcgi-server']
+        $packageswebserver = ['nginx','nginx-extras', 'lemonldap-ng-fastcgi-server','apt-transport-https']
     }
     elsif $webserver == 'apache' {
-        $packageswebserver = ['apache2','libapache2-mod-perl2','libapache2-mod-fcgid']
+        $packageswebserver = ['apache2','libapache2-mod-perl2','libapache2-mod-fcgid','apt-transport-https']
     }
 
     file{ 'repository_debian':
