@@ -1,5 +1,6 @@
-class lemonldap::server::webserver::nginx($do_soap = false,
-					  $domain  = false) {
+class lemonldap::server::webserver::nginx(
+  Boolean $do_soap = false,
+  String $domain   = undef) {
     lemonldap::server::webserver::service { "nginx": }
 
     lemonldap::server::webserver::setdomain {

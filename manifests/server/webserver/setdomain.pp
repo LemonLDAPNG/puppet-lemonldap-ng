@@ -1,5 +1,6 @@
-define lemonldap::server::webserver::setdomain($domain    = false,
-					       $webserver = "apache") {
+define lemonldap::server::webserver::setdomain(
+  String $domain    = false,
+  String $webserver = "apache") {
     if ($domain != false) {
 	exec {
 	    "Set LLNG $name Domain" :

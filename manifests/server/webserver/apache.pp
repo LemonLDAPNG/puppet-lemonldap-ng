@@ -1,6 +1,7 @@
-class lemonldap::server::webserver::apache($do_soap = false,
-					   $domain  = false) {
-    $srvname = $::osfamily ? {
+class lemonldap::server::webserver::apache(
+  Boolean $do_soap = false,
+  String $domain   = undef) {
+    $srvname       = $::osfamily ? {
 	    "RedHat" => "httpd",
 	    default  => "apache2"
 	}

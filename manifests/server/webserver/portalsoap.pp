@@ -1,5 +1,6 @@
-define lemonldap::server::webserver::portalsoap($do_soap   = false,
-						$webserver = $name) {
+define lemonldap::server::webserver::portalsoap(
+  Boolean $do_soap  = false,
+  String $webserver = $name) {
     if ($webserver == "apache") {
 	$set23 = $do_soap ? {
 		true    => "granted",
