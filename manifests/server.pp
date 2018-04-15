@@ -1,4 +1,6 @@
-class lemonldap::server($domain, $webserver) {
+class lemonldap::server($do_soap = false,
+			$domain,
+			$webserver = "apache") {
     include lemonldap::vars
 
     # Execute OS specific actions
@@ -30,13 +32,15 @@ class lemonldap::server($domain, $webserver) {
 	"apache", "httpd": {
 	    class {
 		lemonldap::server::webserver::apache:
-		    domain => $domain;
+		    do_soap => $do_soap,
+		    domain  => $domain;
 	    }
 	}
 	"nginx": {
 	    class {
 		lemonldap::server::webserver::nginx:
-		    domain => $domain;
+		    do_soap => $do_soap,
+		    domain  => $domain;
 	    }
 	}
 	default: {

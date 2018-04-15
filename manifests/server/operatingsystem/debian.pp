@@ -3,9 +3,15 @@ class lemonldap::server::operatingsystem::debian($webserver) {
     case $webserver {
 	"nginx": {
 	    $packageswebserver = [ "nginx", "nginx-extras", "lemonldap-ng-fastcgi-server", "apt-transport-https", "liblasso-perl" ]
+
+	    Package["nginx"]
+		-> Service["nginx"]
 	}
 	"apache", "httpd": {
 	    $packageswebserver = [ "apache2", "libapache2-mod-perl2", "libapache2-mod-fcgid", "apt-transport-https", "liblasso-perl" ]
+
+	    Package["apache2"]
+		-> Service["apache2"]
 	}
 	default: {
 	    fail("Invalid webserver '$webserver', please use nginx, apache or httpd")

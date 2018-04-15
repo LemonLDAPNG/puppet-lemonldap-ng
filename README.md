@@ -22,6 +22,7 @@ Call lemonldap::server class to install LemonLDAP::NG on a node:
 
 ````
     class { 'lemonldap::server':
+        do_soap   => true,
         domain    => 'example.com',
         webserver => 'apache';
     }
