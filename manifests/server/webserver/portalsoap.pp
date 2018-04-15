@@ -42,7 +42,7 @@ define lemonldap::server::webserver::portalsoap($do_soap   = false,
 	    }
 	exec {
 	    "Set LLNG SOAP Portal Configuration (Nginx)" :
-		command => "sed -i 's/${matchngx} all.*/${setngx} all/g' portal-${webserver}*.conf",
+		command => "sed -i 's/${matchngx} all.*/${setngx} all;/g' portal-${webserver}*.conf",
 		cwd     => "/etc/lemonldap-ng",
 		onlyif  => "grep '${matchngx} all' portal-${webserver}*.conf",
 		path    => "/usr/bin:/bin",
