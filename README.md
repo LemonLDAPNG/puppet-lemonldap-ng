@@ -12,7 +12,7 @@ This is the puppet LemonLDAP::NG module. It can be used to install LemonLDAP::NG
 
 ## Module Description
 
-Installation can be done for RedHat or Debian, and Apache or Nginx.
+Installation can be done on RedHat and Debian systems, alongside Apache or Nginx.
 
 Default SSO domain can also be configured.
 
@@ -21,8 +21,8 @@ Default SSO domain can also be configured.
 Call lemonldap::server class to install LemonLDAP::NG on a node:
 
 ````
-    class { 'puppet-lemonldap-ng::server':
+    class { 'lemonldap::server':
         domain    => 'example.com',
-        webserver => 'apache',
+        webserver => 'apache';
     }
 ````

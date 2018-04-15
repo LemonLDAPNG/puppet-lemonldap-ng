@@ -1,43 +1,53 @@
-class puppet-lemonldap-ng::server::operatingsystem::debian($webserver) {
-
-    if $webserver == 'nginx' {
-        $packageswebserver = ['nginx','nginx-extras', 'lemonldap-ng-fastcgi-server','apt-transport-https']
-    }
-    elsif $webserver == 'apache' {
-        $packageswebserver = ['apache2','libapache2-mod-perl2','libapache2-mod-fcgid','apt-transport-https']
-    }
-
-    file{ 'repository_debian':
-        source  => 'puppet:///modules/lemonldap/debian_lemonldap-ng.list',
-        owner   => 'root',
-        group   => 'root',
-        mode    => '0644',
-        path    => '/etc/apt/sources.list.d/lemonldap-ng.list',
+class lemonldap::server::operatingsystem::debian($webserver) {
+    $gpg_pubkey_id = $lemonldap::vars::gpg_pubkey_id
+    case $webserver {
+	"nginx": {
+	    $packageswebserver = [ "nginx", "nginx-extras", "lemonldap-ng-fastcgi-server", "apt-transport-https", "liblasso-perl" ]
+	}
+	"apache", "httpd": {
+	    $packageswebserver = [ "apache2", "libapache2-mod-perl2", "libapache2-mod-fcgid", "apt-transport-https", "liblasso-perl" ]
+	}
+	default: {
+	    fail("Invalid webserver '$webserver', please use nginx, apache or httpd")
+	}
     }
 
-    file{ 'repository_key':
-        source  => 'puppet:///modules/lemonldap/rpm-gpg-key-ow2',
-        owner   => 'root',
-        group   => 'root',
-        mode    => '0644',
-        path    => '/tmp/rpm-gpg-key-ow2',
+    file {
+	"Install LLNG Debian Repository":
+	    group  => "root",
+	    mode   => "0644",
+	    notify => Exec["Refresh Packages Cache"];
+	    owner  => "root",
+	    path   => "/etc/apt/sources.list.d/lemonldap-ng.list",
+	    source => "puppet:///modules/lemonldap/debian_lemonldap-ng.list";
+	"Install LLNG Repository Key":
+	    group  => "root",
+	    mode   => "0644",
+	    notify => Exec["Import APT Key"],
+	    owner  => "root",
+	    path   => "/tmp/gpg-key-ow2",
+	    source => "puppet:///modules/lemonldap/rpm-gpg-key-ow2";
     }
 
-    exec{ 'add_apt_key':
-        command      => '/usr/bin/apt-key add /tmp/rpm-gpg-key-ow2',
-        refreshonly  => true,
-        subscribe    => File['repository_key'],
+    exec {
+	"Import LLNG APT Key":
+	    command     => "apt-key add gpg-key-ow2',
+	    cwd         => "/tmp";
+	    path        => "/usr/sbin:/usr/bin:/sbin:/bin",
+	    require     => File["Install LLNG Repository Key"],
+	    unless      => "apt-key list | sed 's| ||g' | grep -i $gpg_pubkey_id";
+	"Refresh Packages Cache":
+	    command     => 'apt update',
+	    path        => "/usr/sbin:/usr/bin:/sbin:/bin",
+	    refreshonly => true,
+	    require     => Exec["Import LLNG APT Key"];
     }
 
-    exec{ 'refresh_apt':
-        command      => '/usr/bin/apt update',
-        refreshonly  => true,
-        require      => Exec['add_apt_key'],
-        subscribe    => [ File['repository_key'], File['repository_debian']],
+    if ($packagewebserver != false) {
+	package {
+	    $packageswebserver :
+		ensure  => present,
+		require => Exec["Refresh Packages Cache"];
+	}
     }
-
-    package{ $packageswebserver :
-        ensure => installed,
-    }
-
 }

@@ -6,9 +6,8 @@
 #
 # === Authors
 #
-# Clément Oudot <clement.oudot@savoirfairelinux.com> 
+# Clément Oudot <clement.oudot@savoirfairelinux.com>
 #
 
-class puppet-lemonldap-ng {
-
+class lemonldap {
 }

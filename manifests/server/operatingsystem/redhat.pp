@@ -1,51 +1,60 @@
-class puppet-lemonldap-ng::server::operatingsystem::redhat($webserver) {
-
-    if $webserver == 'nginx' {
-        $packageswebserver = ['nginx', 'lemonldap-ng-fastcgi-server']
-    }
-    elsif $webserver == 'apache' {
-        $packageswebserver = ['httpd','mod_perl','mod_fcgid']
-    }
-
-    file{ 'repository_redhat':
-        source  => 'puppet:///modules/lemonldap/redhat_lemonldap-ng.repo',
-        owner   => 'root',
-        group   => 'root',
-        mode    => '0644',
-        path    => '/etc/yum.repo.d/lemonldap-ng.repo',
+class lemonldap::server::operatingsystem::redhat($webserver = "apache") {
+    $gpg_pubkey_id = $lemonldap::vars::gpg_pubkey_id
+    case $webserver {
+	"nginx": {
+	    $packageswebserver = [ "nginx", "lemonldap-ng-fastcgi-server", "perl-LWP-Protocol-https" ]
+	}
+	"apache", "httpd": {
+	    $packageswebserver = [ "httpd", "mod_perl", "mod_fcgid", "perl-LWP-Protocol-https" ]
+	}
+	default: {
+	    fail("Invalid webserver '$webserver', please use nginx, apache or httpd")
+	}
     }
 
-    file{ 'repository_redhat_epel':
-        source  => 'puppet:///modules/lemonldap/epel.repo',
-        owner   => 'root',
-        group   => 'root',
-        mode    => '0644',
-        path    => '/etc/yum.repo.d/epel.repo',
+    file {
+	"Install LLNG Enterprise Linux Repository":
+	    group  => "root",
+	    mode   => "0644",
+	    notify => Exec["Refresh Packages Cache"],
+	    owner  => "root",
+	    path   => "/etc/yum.repos.d/lemonldap-ng.repo",
+	    source => "puppet:///modules/lemonldap/redhat_lemonldap-ng.repo";
+	"Install LLNG Repository Key":
+	    group  => "root",
+	    mode   => "0644",
+	    owner  => "root",
+	    path   => "/etc/pki/rpm-gpg/RPM-GPG-KEY-OW2",
+	    source => "puppet:///modules/lemonldap/rpm-gpg-key-ow2";
     }
 
-    file{ 'repository_key':
-        source  => 'puppet:///modules/lemonldap/rpm-gpg-key-ow2',
-        owner   => 'root',
-        group   => 'root',
-        mode    => '0644',
-        path    => '/tmp/rpm-gpg-key-ow2',
+    package {
+	"epel-release":
+	    ensure => present;
     }
 
-    exec{ 'add_rpm_key':
-        command      => '/bin/rpm --import /tmp/rpm-gpg-key-ow2',
-        refreshonly  => true,
-        subscribe    => File['repository_key'],
+    exec {
+	"Import LLNG RPM Key":
+	    command     => "rpm --import RPM-GPG-KEY-OW2",
+	    cwd         => "/etc/pki/rpm-gpg",
+	    path        => "/usr/sbin:/usr/bin:/sbin:/bin",
+	    require     => File["Install LLNG Repository Key"],
+	    unless      => "rpm -q gpg-pubkey --qf '%{VERSION}\n' | grep -i $gpg_pubkey_id";
+	"Refresh Packages Cache":
+	    command     => "yum clean all && yum makecache",
+	    path        => "/usr/sbin:/usr/bin:/sbin:/bin",
+	    refreshonly => true,
+	    require     => [
+		    Exec["Import LLNG RPM Key"],
+		    Package["epel-release"]
+		];
     }
 
-    exec{ 'refresh_yum':
-        command      => '/usr/bin/yum clean all && /usr/bin/yum makecache',
-        refreshonly  => true,
-        require      => Exec['add_rpm_key'],
-        subscribe    => [File['repository_key'], File['repository_redhat'], File['repository_redhat_epel']],
+    if ($packagewebserver != false) {
+	package {
+	    $packageswebserver:
+		ensure  => present,
+		require => Exec["Refresh Packages Cache"];
+	}
     }
-
-    package{ $packageswebserver :
-        ensure  => installed,
-    }
-
 }
