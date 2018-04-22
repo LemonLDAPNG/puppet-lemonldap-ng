@@ -1,5 +1,24 @@
-class lemonldap::server::operatingsystem::debian($webserver) {
-    $gpg_pubkey_id = $lemonldap::vars::gpg_pubkey_id
+class lemonldap::server::operatingsystem::debian(
+  String $sessionstore = "File",
+  String $webserver    = "apache") {
+    $gpg_pubkey_id     = $lemonldap::vars::gpg_pubkey_id
+    case $sessionstore {
+	/^[Mm]y[Ss][Qq][Ll]$/: {
+	    $packagesessions = [ "mysql-client" ]
+	}
+	/^[Pp]ostgre([Ss][Qq][Ll]|s)$/: {
+	    $packagesessions = [ "postgresql-client" ]
+	}
+	/^[Mm]ongo([Dd][Bb]|)$/: {
+	    $packagesessions = [ "mongodb-clients" ]
+	}
+	/^[Rr]edis$/: {
+	    $packagesessions = [ "redis-tools" ]
+	}
+	default: {
+	    $packagesessions = false
+	}
+    }
     case $webserver {
 	"nginx": {
 	    $packageswebserver = [ "nginx", "nginx-extras", "lemonldap-ng-fastcgi-server", "apt-transport-https", "liblasso-perl" ]
@@ -49,9 +68,16 @@ class lemonldap::server::operatingsystem::debian($webserver) {
 	    require     => Exec["Import LLNG APT Key"];
     }
 
+    if ($sessionstore != false) {
+	package {
+	    $sessionstore:
+		ensure  => present,
+		require => Exec["Refresh Packages Cache"];
+	}
+    }
     if ($packagewebserver != false) {
 	package {
-	    $packageswebserver :
+	    $packageswebserver:
 		ensure  => present,
 		require => Exec["Refresh Packages Cache"];
 	}

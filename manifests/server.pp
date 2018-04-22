@@ -14,6 +14,9 @@
 #   The root domain we would setup LLNG services on top of. Beware a default
 #   install would setup virtualhosts for (reload|manager|auth|test1).yourdomain
 #   Defaults to 'undef'.
+# [*sessionstore*]
+#   What kind of sessions storage would we use. Can be `MySQL`, `PostgreSQL`,
+#   `LDAP`, `Redis`, `MongoDB`, `Browseable` or `SOAP`. Defaults to `File`.
 # [*ssl_ca_path*]
 #   When 'do_ssl' is 'True', set here your custom CA path. Defaults to 'undef'.
 # [*ssl_cert_path*]
@@ -35,6 +38,7 @@ class lemonldap::server (
   Boolean $do_soap      = false,
   Boolean $do_ssl       = false,
   String $domain        = undef,
+  String $sessionstore  = "File",
   String $ssl_ca_path   = undef,
   String $ssl_cert_path = undef,
   String $ssl_key_path  = undef,
@@ -46,13 +50,15 @@ class lemonldap::server (
 	"Debian": {
 	    class {
 		lemonldap::server::operatingsystem::debian:
-		    webserver => $webserver;
+		    sessionstore => $sessionstore,
+		    webserver    => $webserver;
 	    }
 	}
 	"RedHat": {
 	    class {
 		lemonldap::server::operatingsystem::redhat:
-		    webserver => $webserver;
+		    sessionstore => $sessionstore,
+		    webserver    => $webserver;
 	    }
 	}
 	default: {

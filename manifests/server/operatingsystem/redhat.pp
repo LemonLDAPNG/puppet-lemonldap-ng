@@ -1,5 +1,18 @@
-class lemonldap::server::operatingsystem::redhat($webserver = "apache") {
-    $gpg_pubkey_id = $lemonldap::vars::gpg_pubkey_id
+class lemonldap::server::operatingsystem::redhat(
+  String $sessionstore = "File",
+  String $webserver    = "apache") {
+    $gpg_pubkey_id     = $lemonldap::vars::gpg_pubkey_id
+    case $sessionstore {
+	/^[Mm]y[Ss][Qq][Ll]$/: {
+	    $packagesessions = [ "mariadb-libs" ]
+	}
+	/^[Pp]ostgre([Ss][Qq][Ll]|s)$/: {
+	    $packagesessions = [ "postgresql-libs" ]
+	}
+	default: {
+	    $packagesessions = false
+	}
+    }
     case $webserver {
 	"nginx": {
 	    $packageswebserver = [ "nginx", "lemonldap-ng-fastcgi-server", "perl-LWP-Protocol-https" ]
@@ -56,6 +69,13 @@ class lemonldap::server::operatingsystem::redhat($webserver = "apache") {
 		];
     }
 
+    if ($sessionstore != false) {
+	package {
+	    $sessionstore:
+		ensure  => present,
+		require => Exec["Refresh Packages Cache"];
+	}
+    }
     if ($packagewebserver != false) {
 	package {
 	    $packageswebserver:
