@@ -1,17 +1,23 @@
-class puppet-lemonldap-ng::server::webserver::apache($domain) {
-    
-    $apacheconf = ['/etc/lemonldap-ng/handler-apache2.conf','/etc/lemonldap-ng/manager-apache2.conf','/etc/lemonldap-ng/portal-apache2.conf','/etc/lemonldap-ng/test-apache2.conf']
-  
-    changedomain{ $apacheconf : }
+class lemonldap::server::webserver::apache(
+  Boolean $do_soap = false,
+  String $domain   = undef) {
+    $srvname       = $::osfamily ? {
+	    "RedHat" => "httpd",
+	    default  => "apache2"
+	}
 
-    define changedomain() {
-	exec { "changedomain$name" :
-              path    => ['/usr/bin','/bin'],
-              command => "sed -i 's/example\.com/$domain/g' $name ",
-              onlyif  => "grep -q 'example.com' $name",
-              require =>  Exec[ 'change-default-domain'],
-        }
+    lemonldap::server::webserver::service { $srvname: }
+
+    lemonldap::server::webserver::setdomain {
+	$lemonldap::vars::webserver_conf:
+	    domain    => $domain,
+	    notify    => Service[$srvname],
+	    webserver => "apache";
     }
 
-
+    lemonldap::server::webserver::portalsoap {
+	"apache":
+	    do_soap => $do_soap,
+	    notify    => Service[$srvname];
+    }
 }
